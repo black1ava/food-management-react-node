@@ -1,0 +1,9 @@
+.center {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.w-40 {
+  width: 40vw;
+}
