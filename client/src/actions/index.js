@@ -39,3 +39,15 @@ export function addRegisterPasswordConfirmation(payload){
     payload
   };
 }
+
+export function clearRegister(){
+  return {
+    type: 'CLEAR_REGISTER'
+  };
+}
+
+export function clearLogin(){
+  return {
+    type: 'CLEAR_LOGIN'
+  };
+}

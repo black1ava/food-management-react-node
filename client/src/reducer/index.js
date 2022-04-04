@@ -67,6 +67,18 @@ function reducer(state = intialState, action){
         }
       };
 
+    case 'CLEAR_REGISTER':
+      return {
+        ...state,
+        register: intialState.register
+      };
+
+    case 'CLEAR_LOGIN':
+      return {
+        ...state,
+        login: intialState.login
+      }
+
     default:
       return state;
   }

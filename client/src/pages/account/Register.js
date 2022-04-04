@@ -1,18 +1,23 @@
 import React, { useCallback, useState } from 'react';
 import { Form, FormLayout, Button, TextField, Checkbox } from '@shopify/polaris';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 import { 
   addRegisterEmail,
   addRegisterUsername,
   addRegisterPassword,
-  addRegisterPasswordConfirmation
+  addRegisterPasswordConfirmation,
+  clearRegister
 } from '../../actions';
 
 function Register(props){
 
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] = useState(false);
+  const [usernameError, setUsernameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const handleShowPasswordChange = useCallback(function(){
     setShowPassword(prevState => !prevState);
@@ -24,24 +29,46 @@ function Register(props){
 
   const handleUsernameChange = useCallback(function(value){
     props.addRegisterUsername(value);
+    setUsernameError('');
   }, [props]);
 
   const handleEmailChange = useCallback(function(value){
     props.addRegisterEmail(value);
+    setEmailError('');
   }, [props]);
 
   const handlePasswordChange = useCallback(function(value){
     props.addRegisterPassword(value);
+    setPasswordError('');
   }, [props]);
 
   const handlePasswordConfirmationChange = useCallback(function(value){
     props.addRegisterPasswordConfirmation(value);
+    setPasswordError('');
   }, [props]);
 
-  const handleSubmit = useCallback(function(event){
+  const handleSubmit = useCallback(async function(event){
     event.preventDefault();
-    console.log("Register");
-  }, []);
+    
+    try {
+
+      const { username, email, password, password_confirmation } = props;
+
+      await axios.post('/authentication/register', {
+        username,
+        email,
+        password,
+        password_confirmation
+      });
+
+      props.clearRegister();
+    }catch(e){
+      const { username, password, email } = e.response.data;
+      setUsernameError(username);
+      setPasswordError(password);
+      setEmailError(email);
+    }
+  }, [props]);
 
   return(
     <Form onSubmit={ handleSubmit }>
@@ -50,18 +77,21 @@ function Register(props){
           label="Username"
           type="text"
           value={ props.username }
+          error={ usernameError }
           onChange={ handleUsernameChange }
         />
         <TextField 
           label="Email"
           type="email"
           value={ props.email }
+          error={ emailError }
           onChange={ handleEmailChange }
         />
         <TextField 
           label="Password"
           type={ showPassword ? 'text' : 'password' }
           value={ props.password }
+          error={ passwordError }
           onChange={ handlePasswordChange}
         />
         <Checkbox 
@@ -100,7 +130,8 @@ const mapDispatchToProps = {
   addRegisterEmail,
   addRegisterUsername,
   addRegisterPassword,
-  addRegisterPasswordConfirmation
+  addRegisterPasswordConfirmation,
+  clearRegister
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Register);

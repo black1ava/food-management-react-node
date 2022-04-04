@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
+const api = require('./api');
+
 const { PORT, URI } = process.env;
 
 const app = express();
@@ -16,6 +18,8 @@ mongoose.connect(URI);
 mongoose.connection.once('open', function(){
   console.log('Connect to database successfully');
 });
+
+api(app);
 
 app.listen(PORT, function(){
   console.log(`Server is running on port ${ PORT }`);
