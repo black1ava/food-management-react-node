@@ -2,10 +2,12 @@ import React, { useCallback, useState } from 'react';
 import { Form, FormLayout, TextField, Button, Checkbox } from '@shopify/polaris';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import {
   addLoginEmail,
-  addLoginPassword
+  addLoginPassword,
+  clearLogin
 } from '../../actions';
 
 function Login(props){
@@ -13,6 +15,7 @@ function Login(props){
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
 
   const handleShowPasswordChange = useCallback(function(){
     setShowPassword(prevState => !prevState);
@@ -33,14 +36,15 @@ function Login(props){
     try {
       const { email, password } = props;
 
-      const response = await axios.post('/authentication/login', { email, password });
-      console.log(response.data);
+      await axios.post('/authentication/login', { email, password });
+      props.clearLogin();
+      navigate('/');
     }catch(e){
       const { email, password } = e.response.data;
       setEmailError(email);
       setPasswordError(password);
     }
-  }, [props]);
+  }, [props, navigate]);
 
   return(
     <Form onSubmit={handleSubmit  }>
@@ -79,7 +83,8 @@ function mapStateToProps(state){
 
 const mapDispatchToProps = {
   addLoginEmail,
-  addLoginPassword
+  addLoginPassword,
+  clearLogin
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

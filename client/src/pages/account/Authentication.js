@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
 import { Card, Tabs } from '@shopify/polaris';
+import { useNavigate } from 'react-router-dom';
 
 import Login from './Login';
 import Register from './Register';
@@ -10,7 +11,8 @@ function Authentication(){
 
   const [selected, setSelected] = useState(0);
   const [loading, setLoading] = useState(true);
-  const auth = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSelect = useCallback(function(selectedIndex){
     setSelected(selectedIndex);
@@ -31,9 +33,14 @@ function Authentication(){
 
   useEffect(function(){
     async function checkAuth(){
-      const isLoggedin = await auth.checkAuth();
+      const auth = await authContext.checkAuth();
+
+      if(auth.status === 'logged-in'){
+        navigate('/');
+        return;
+      }
+
       setLoading(false);
-      console.log(isLoggedin);
     }
 
     checkAuth();

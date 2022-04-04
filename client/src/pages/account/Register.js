@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Form, FormLayout, Button, TextField, Checkbox } from '@shopify/polaris';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import { 
   addRegisterEmail,
@@ -18,6 +19,7 @@ function Register(props){
   const [usernameError, setUsernameError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
 
   const handleShowPasswordChange = useCallback(function(){
     setShowPassword(prevState => !prevState);
@@ -62,13 +64,14 @@ function Register(props){
       });
 
       props.clearRegister();
+      navigate('/');
     }catch(e){
       const { username, password, email } = e.response.data;
       setUsernameError(username);
       setPasswordError(password);
       setEmailError(email);
     }
-  }, [props]);
+  }, [props, navigate]);
 
   return(
     <Form onSubmit={ handleSubmit }>
