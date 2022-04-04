@@ -74,4 +74,23 @@ router.route('/login').post(async function(req, res){
   }
 });
 
+router.route('/status').get(async function(req, res){
+  const token = req.cookies['authorized_token'];
+  const status = { status: '' };
+
+  if(token){
+    jwt.verify(token, SECRET, function(err){
+      if(err){
+        status.status = 'logged-out';
+      }else{
+        status.status = 'logged-in';
+      }
+    });
+  }else{
+    status.status = 'logged-out';
+  }
+
+  res.status(200).json(status);
+});
+
 module.exports = router;
