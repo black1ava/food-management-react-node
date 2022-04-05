@@ -51,3 +51,9 @@ export function clearLogin(){
     type: 'CLEAR_LOGIN'
   };
 }
+
+export function showSigninLoading(){
+  return {
+    type: 'SHOW_SIGNIN_LOADING'
+  };
+}

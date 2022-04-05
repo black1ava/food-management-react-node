@@ -7,8 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import {
   addLoginEmail,
   addLoginPassword,
-  clearLogin
+  clearLogin,
+  showSigninLoading
 } from '../../actions';
+import SigninLoading from '../components/SigninLoading';
 
 function Login(props){
 
@@ -35,9 +37,9 @@ function Login(props){
     event.preventDefault();
     try {
       const { email, password } = props;
-
+      props.showSigninLoading();
       await axios.post('/authentication/login', { email, password });
-      props.clearLogin();
+      props.showSigninLoading();
       navigate('/');
     }catch(e){
       const { email, password } = e.response.data;
@@ -47,44 +49,49 @@ function Login(props){
   }, [props, navigate]);
 
   return(
-    <Form onSubmit={handleSubmit  }>
-      <FormLayout>
-        <TextField 
-          label="Email"
-          type="email"
-          value={ props.email }
-          error={ emailError }
-          onChange={ handleEmailChange }
-        />
-        <TextField 
-          label="Password"
-          type={ showPassword ? 'text' : 'password' }
-          value={ props.password }
-          error={ passwordError }
-          onChange={ handlePasswordChange }
-        />
-        <Checkbox 
-          label="Show password"
-          checked={ showPassword }
-          onChange={ handleShowPasswordChange }
-        />
-        <Button submit primary>Login</Button>
-      </FormLayout>
-    </Form>
+    <div>
+      <SigninLoading open={ props.signinLoading } />
+      <Form onSubmit={handleSubmit  }>
+        <FormLayout>
+          <TextField 
+            label="Email"
+            type="email"
+            value={ props.email }
+            error={ emailError }
+            onChange={ handleEmailChange }
+          />
+          <TextField 
+            label="Password"
+            type={ showPassword ? 'text' : 'password' }
+            value={ props.password }
+            error={ passwordError }
+            onChange={ handlePasswordChange }
+          />
+          <Checkbox 
+            label="Show password"
+            checked={ showPassword }
+            onChange={ handleShowPasswordChange }
+          />
+          <Button submit primary>Login</Button>
+        </FormLayout>
+      </Form>
+    </div>
   );
 }
 
 function mapStateToProps(state){
   return {
     email: state.login.email,
-    password: state.login.password
+    password: state.login.password,
+    signinLoading: state.loading.signin
   };
 }
 
 const mapDispatchToProps = {
   addLoginEmail,
   addLoginPassword,
-  clearLogin
+  clearLogin,
+  showSigninLoading
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

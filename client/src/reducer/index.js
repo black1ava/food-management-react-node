@@ -8,6 +8,9 @@ const intialState = {
     email: '',
     password: '',
     password_confirmation: ''
+  },
+  loading: {
+    signin: false
   }
 };
 
@@ -78,6 +81,15 @@ function reducer(state = intialState, action){
         ...state,
         login: intialState.login
       }
+
+    case 'SHOW_SIGNIN_LOADING':
+      return {
+        ...state,
+        loading: {
+          ...state.loading,
+          signin: !state.loading.signin
+        }
+      };
 
     default:
       return state;
