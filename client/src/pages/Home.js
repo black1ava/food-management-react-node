@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Card } from '@shopify/polaris';
 import { useNavigate } from 'react-router-dom';
 
 import { AuthContext } from '../App';
 import LoadingPage from './loading/LoadingPage';
+import PageLayout from './layout/PageLayout';
 
 function Home(){
 
@@ -27,9 +27,7 @@ function Home(){
 
   return(
     <div>
-      { loading ? <LoadingPage /> : <Card title="Home" sectioned>
-        <h1>Home</h1>
-      </Card> }
+      { loading ? <LoadingPage /> :  <PageLayout /> }
     </div>
   );
 }
